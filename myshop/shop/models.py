@@ -7,7 +7,7 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['name']
-        index =[
+        indexes =[
             models.Index(fields=['name']),
         ]
         verbose_name = 'category'
