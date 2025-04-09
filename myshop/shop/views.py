@@ -2,6 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from .models import Category, Product
 
 
+
+# It handles:
+# Showing all products if no category is selected.
+# Showing products in a specific category if one is selected via the URL (using the slug).
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
