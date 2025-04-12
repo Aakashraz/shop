@@ -26,19 +26,31 @@ class Cart:
           with the given quantity (True) or whether the new quantity has to be added to the existing
           quantity (False).
         """
+        # (Session keys are strings in Django)
         product_id = str(product.id)
-        if product_id not in self.cart:
+        if product_id not in self.cart:         # First-time addition
             self.cart[product_id] = {
                 'quantity': 0,
-                'price': str(product.price)
+                'price': str(product.price)     # Price locked here
             }
         if override_quantity:
-            self.cart[product_id]['quantity'] = quantity
+            self.cart[product_id]['quantity'] = quantity    # Replace
         else:
-            self.cart[product_id]['quantity'] += quantity
+            self.cart[product_id]['quantity'] += quantity   # Add/Update
         self.save()
 
 
     def save(self):
-        # mark the session as "modified" to make sure it gets saved
+        # mark the session as "modified" to ensure persistence which makes sure it gets saved,
+        # this tells Django that the session has changed and needs to be saved
+        # Without this quantity changes might not save properly
         self.session.modified = True
+
+    def remove(self, product):
+        """
+        Remove a product from the cart.
+        """
+        product_id = str(product.id)
+        if product_id in self.cart:
+            del self.cart[product_id]
+            self.save()
