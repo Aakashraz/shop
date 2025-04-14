@@ -52,6 +52,7 @@ class Cart:
         # Without this quantity changes might not save properly
         self.session.modified = True
 
+
     def remove(self, product):
         """
         Remove a product from the cart.
@@ -60,6 +61,7 @@ class Cart:
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
+
 
     # This __iter__() method will allow you to easily iterate over
     # the items in the cart in views and templates.
@@ -80,12 +82,14 @@ class Cart:
             item['total_price'] = item['price'] * item['quantity']
             yield item
 
+
     # custom __len__() method to return the total number of items stored in the cart.
     def __len__(self):
         """
         Count all items in the cart.
         """
         return sum(item['quantity'] for item in self.cart.values())
+
 
     # To calculate the total cost of the items in the cart
     def get_total_price(self):
@@ -95,6 +99,7 @@ class Cart:
     # A generator expression is a compact way to create an iterator — something you can loop over —
     # - without storing the entire list in memory.
     # syntax: (expression for item in iterable)
+
 
     # Method to clear the cart session
     def clear(self):
