@@ -69,13 +69,13 @@ class Cart:
         """
         Iterate over the items in the cart and get the products from the database.
         """
-        product_ids = self.cart.key()
+        product_ids = self.cart.keys()
         # get the product objects and add them to the cart.
         products = Product.objects.filter(id__in=product_ids)
-        cart = self.cart.copy()
+        cart = self.cart.copy()     # Avoid modifying the original cart
 
         for product in products:
-            cart[str(product.id)][product] = product
+            cart[str(product.id)]['product'] = product
 
         for item in cart.values():
             item['price'] = Decimal(item['price'])
