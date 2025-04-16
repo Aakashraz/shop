@@ -76,6 +76,7 @@ class Cart:
 
         for product in products:
             cart[str(product.id)]['product'] = product
+            print(type(cart[str(product.id)]['product']))  # Output: <class 'shop.models.Product'>
 
         for item in cart.values():
             item['price'] = Decimal(item['price'])
