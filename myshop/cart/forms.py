@@ -14,10 +14,10 @@ class CartAddProductForm(forms.Form):
     # finally compares it to the same first element (2) in the choices.
     quantity = forms.TypedChoiceField(
         choices=PRODUCT_QUANTITY_CHOICES,
-        coerce=int,
+        coerce=int,     # ensures quantity is an integer
     )
     override = forms.BooleanField(
-        required=False,
-        initial=False,
-        widget=forms.HiddenInput,
+        required=False,     # can be omitted in POST
+        initial=False,      # defaults to False if not set
+        widget=forms.HiddenInput,   # makes it a hidden field
     )

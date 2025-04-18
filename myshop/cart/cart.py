@@ -8,7 +8,7 @@ class Cart:
         """
         Initialize the cart.
         """
-        self.session = request.session
+        self.session = request.session  # Gets the session dict
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
             # save an empty cart in the session

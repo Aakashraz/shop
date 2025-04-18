@@ -29,11 +29,14 @@ def cart_remove(request, product_id):
 
 
 def cart_detail(request):
-    cart = Cart(request)
+    cart = Cart(request)    # Loads current cart from session
     # update product quantities
     for item in cart:
-        item['update_quantity_form'] = CartAddProducForm(
-            initial={'quantity': item['quantity'], 'override': True}
+        item['update_quantity_form'] = CartAddProductForm(
+            initial={
+                'quantity': item['quantity'],   # Pre-fill with current quantity
+                'override': True                # Ensure replacement (not adding)
+            }
         )
     return render(request, 'cart/detail.html', {'cart': cart})
 
