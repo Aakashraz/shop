@@ -12,6 +12,7 @@ def cart_add(request, product_id):
     form = CartAddProductForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
+        print(f'For Update/Add Value >>> quantity:{cd['quantity']}, override:{cd['override']}, price:{product.price}')
         cart.add(
             product=product,
             quantity=cd['quantity'],
@@ -30,6 +31,12 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)    # Loads current cart from session
+
+    # For Debugging purpose
+    for item in cart:
+        print(f'item["product"].name: {item["product"].name}, item["quantity"]: {item["quantity"]}, '
+              f'item["total_price"]: {item["total_price"]}')
+
     # update product quantities
     for item in cart:
         item['update_quantity_form'] = CartAddProductForm(

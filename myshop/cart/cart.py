@@ -69,11 +69,14 @@ class Cart:
         """
         Iterate over the items in the cart and get the products from the database.
         """
+        # Get all product IDs from the session cart
         product_ids = self.cart.keys()
-        # get the product objects and add them to the cart.
+
+        # get the product objects from database and add them to the cart.
         products = Product.objects.filter(id__in=product_ids)
         cart = self.cart.copy()     # Avoid modifying the original cart
 
+        # Inject full Product instances into cart items
         for product in products:
             cart[str(product.id)]['product'] = product
             print(type(cart[str(product.id)]['product']))  # Output: <class 'shop.models.Product'>
@@ -82,6 +85,8 @@ class Cart:
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity']
             yield item
+            # Instead of returning a full list, this yields one cart item at a time
+            # (makes the class memory efficient and iterable).
 
 
     # custom __len__() method to return the total number of items stored in the cart.
