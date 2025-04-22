@@ -14,10 +14,14 @@ class CartAddProductForm(forms.Form):
     # finally compares it to the same first element (2) in the choices.
     quantity = forms.TypedChoiceField(
         choices=PRODUCT_QUANTITY_CHOICES,
-        coerce=int,
+        coerce=int,     # ensures quantity is an integer
     )
     override = forms.BooleanField(
-        required=False,
-        initial=False,
-        widget=forms.HiddenInput,
+        required=False,     # required=False means: “Don’t raise a validation error if this field is missing.”
+        initial=False,      # defaults to False if not set
+        widget=forms.HiddenInput,   # makes it a hidden field
     )
+    # What does required=False mean in BooleanField?
+    # By default, Django form fields are required=True, which means:
+    # The field must be present in the POST data.
+    # If it’s missing, the form is invalid.
