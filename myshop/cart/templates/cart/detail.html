@@ -32,6 +32,11 @@
                         <td>
 <!--                            {{ item.quantity }}-->
 <!--                        Replace above line with the following form -->
+                            {% if item.actual_quantity > 20 %}
+                                Quantity: {{ item.actual_quantity }}
+                                <br>
+                                Update to (max 20)
+                            {% endif %}
                             <form action="{% url 'cart:cart_add' product.id %}" method="post">
                                 {{ item.update_quantity_form.quantity }}
                                 {{ item.update_quantity_form.override }}

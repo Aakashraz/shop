@@ -42,9 +42,13 @@ def cart_detail(request):
     for item in cart:
         item['update_quantity_form'] = CartAddProductForm(
             initial={
-                'quantity': item['quantity'],   # Pre-fill with current quantity
+                # For dropdown, limit to 50 even if actual quantity is higher
+                'quantity': min(item['quantity'],20),   # Pre-fill with current quantity
                 'override': True                # Ensure replacement (not adding)
             }
         )
+        # Store the actual quantity separately to display
+        item['actual_quantity'] = item['quantity']
+
     return render(request, 'cart/detail.html', {'cart': cart})
 
