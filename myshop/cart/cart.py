@@ -94,6 +94,7 @@ class Cart:
         """
         Count all items in the cart.
         """
+        print(f'length of cart: {len(self.cart)} products')
         return sum(item['quantity'] for item in self.cart.values())
 
 
