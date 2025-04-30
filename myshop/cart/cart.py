@@ -72,19 +72,22 @@ class Cart:
         # Get all product IDs from the session cart
         product_ids = self.cart.keys()
 
-        # get the product objects from database and add them to the cart.
+        # get the product objects from a database and add them to the cart.
         products = Product.objects.filter(id__in=product_ids)
         cart = self.cart.copy()     # Avoid modifying the original cart
 
         # Inject full Product instances into cart items
         for product in products:
             cart[str(product.id)]['product'] = product
+            # Now, example:  cart['42'] == {'price': '19.99', 'quantity': 2, 'product': <Product 42>}
             print(type(cart[str(product.id)]['product']))  # Output: <class 'shop.models.Product'>
 
         for item in cart.values():
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity']
+            # now item also still has 'product' and 'quantity' which was injected earlier in the add()
             yield item
+            print(f'item from the __iter__ method: {item}')
             # Instead of returning a full list, this yields one cart item at a time
             # (makes the class memory efficient and iterable).
 
