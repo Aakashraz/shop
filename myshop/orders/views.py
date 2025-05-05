@@ -15,14 +15,12 @@ def order_create(request):
             order = form.save()
             for item in cart:   # this calls your __iter__ above from cart.py
                 # each item looks like:
-                # { 'product': <Product instance>,
-                #   'price': Decimal('19.99'),
-                #   'quantity': 2 }
-
+                # item from the __iter__ method: {'quantity': 5, 'price': Decimal('50.00'),
+                # 'product': <Product: Red Tea>, 'total_price': Decimal('250.00')}
                 OrderItem.objects.create(
                     order=order,                # the Order instance you just saved
                     product=item['product'],    # a Product model instance
-                    price=item['price'],        # price at time or order
+                    price=item['price'],        # price at time of order
                     quantity=item['quantity']   # how many units
                 )
             # item['price'] and item['quantity'] came straight from your session data via the Cart’s __iter__.
