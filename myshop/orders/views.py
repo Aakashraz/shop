@@ -2,6 +2,7 @@ from django.shortcuts import render
 from cart.cart import Cart
 from .forms import OrderCreateForm
 from .models import OrderItem
+from .tasks import order_created
 
 
 # Create your views here.
@@ -30,6 +31,9 @@ def order_create(request):
             # You want to remove the old cart data so that:
             # The user sees an empty cart on their next visit.
             # They can’t accidentally re-submit the same items again.
+
+            # launch an asynchronous task
+            order_created.delay(order.id)
 
             return render(
                 request, 'orders/order/created.html', {'order':order}
