@@ -32,7 +32,7 @@ def order_create(request):
             # The user sees an empty cart on their next visit.
             # They can’t accidentally re-submit the same items again.
 
-            # launch an asynchronous task
+            # launch an asynchronous task using celery
             order_created.delay(order.id)
 
             return render(
