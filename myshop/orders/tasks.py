@@ -26,3 +26,7 @@ def order_created(order_id):
         subject, message, 'admin@myshop.com', [order.email]
     )
     return mail_sent
+
+@shared_task()
+def test_task():
+    return "celery rocks"
