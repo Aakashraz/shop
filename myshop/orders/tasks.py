@@ -7,6 +7,9 @@ from .models import Order
 # when the task is executed. By doing so, we avoid accessing outdated information since the data
 # in the database might have changed while the task was queued.
 
+
+# @shared_task is a function decorator that tells Celery:
+#   "Register this function as a Celery task that can be run asynchronously."
 @shared_task
 def order_created(order_id):
     """
@@ -23,3 +26,9 @@ def order_created(order_id):
         subject, message, 'admin@myshop.com', [order.email]
     )
     return mail_sent
+
+
+# For test purpose only
+# @shared_task()
+# def test_task():
+#     return "celery rocks"
