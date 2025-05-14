@@ -27,6 +27,8 @@ def order_created(order_id):
     )
     return mail_sent
 
-@shared_task()
-def test_task():
-    return "celery rocks"
+
+# For test purpose only
+# @shared_task()
+# def test_task():
+#     return "celery rocks"

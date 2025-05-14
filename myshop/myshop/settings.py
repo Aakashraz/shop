@@ -136,7 +136,7 @@ CART_SESSION_ID = 'cart'    # Key used to store the cart in the session
 
 
 # To write email to the console
-EMAIL_BACKEND = 'django.core.mail.backend.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Celery Configuration with RabbitMQ Docker
