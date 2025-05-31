@@ -14,7 +14,10 @@ stripe.api_version = settings.STRIPE_API_VERSION
 
 def payment_process(request):
     order_id = request.session.get('order_id')
-    order = get_object_or_404(Order, id=order_id)
+    # Optimized query: prefetch related items and their products
+    order = get_object_or_404(
+        Order.objects.prefetch_related('items__product'), id=order_id
+    )
 
     if request.method == 'POST':
         # request.build_absolute_uri() -- Converts a relative path to a full URL (e.g., adds https://domain.com).
