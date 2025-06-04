@@ -12,6 +12,11 @@ def stripe_webhook(request):
     event = None
 
     try:
+        # The stripe.Webhook.construct_event() method is a helper provided by Stripe's SDK,
+        # designed to simplify the process of verifying webhook requests.
+        #
+        # To verify the event's signature header. If the event's payload or the signature is invalid,
+        # we return an HTTP 400 Bad response. Otherwise, we return an HTTP 200 OK response.
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
@@ -34,7 +39,7 @@ def stripe_webhook(request):
                 )
             except Order.DoesNotExist:
                 return HttpResponse(status=404)
-    #         mark order as paid
+            # mark order as paid
             order.paid = True
             order.save()
 
