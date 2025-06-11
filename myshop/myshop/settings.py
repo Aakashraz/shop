@@ -154,6 +154,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kathmandu'
 
 
+IMPORT_EXPORT_CELERY_MODELS = {
+    "Order": {
+        'app_label': 'orders',
+        'model_name': 'Order',
+        'resource': 'orders.resources.OrderResource',
+    }
+}
+
 # Importing stripe credentials
 from decouple import config
 
