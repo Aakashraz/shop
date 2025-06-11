@@ -12,9 +12,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myshop.settings')
 # Create a Celery application instance with the name 'myshop'
 app = Celery('myshop')
 
-app.config_from_object('django.conf:settings', namespace='CELERY')
 # Tells Celery to read configuration settings from your settings.py, using the prefix CELERY_.
 # For example, CELERY_BROKER_URL, CELERY_RESULT_BACKEND, etc.
+app.config_from_object('django.conf:settings', namespace='CELERY')
 
-app.autodiscover_tasks()
 # Automatically discover tasks from all registered Django app configs
+app.autodiscover_tasks()

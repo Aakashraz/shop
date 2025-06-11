@@ -40,10 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
+
+    'import_export',
+    'import_export_celery',
+
 
 ]
 
@@ -148,6 +153,14 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kathmandu'
 
+
+IMPORT_EXPORT_CELERY_MODELS = {
+    "Order": {
+        'app_label': 'orders',
+        'model_name': 'Order',
+        'resource': 'orders.resources.OrderResource',
+    }
+}
 
 # Importing stripe credentials
 from decouple import config
