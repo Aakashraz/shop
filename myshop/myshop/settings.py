@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
 
+    'author',
     'import_export',
     'import_export_celery',
-
 
 ]
 
@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'author.middleware.AuthorDefaultBackendMiddleware',
+    'author.middlewares.AuthorDefaultBackendMiddleware',
 ]
 
 ROOT_URLCONF = 'myshop.urls'
@@ -190,13 +190,15 @@ IMPORT_EXPORT_CELERY_MODELS = {
     "Order": {
         'app_label': 'orders',
         'model_name': 'Order',
-        'resource': 'orders.resources.OrderResource',
+        'resource': 'orders.resources.OrderResource',   # This is a common pattern in Django and Python libraries,
+        # where strings in configuration settings are lazily imported only when needed, rather than
+        # at the time the settings file is loaded.
     }
 }
 
 # Bulk import export Celery configuration
 IMPORT_EXPORT_CELERY_INIT_MODULE = 'myshop.celery'
-# This setting tells the django-import-export-celery library where to find your project's  main Celeery application instance.
+# This setting tells the django-import-export-celery library where to find your project's main Celeery application instance.
 # Essentially, you're telling the import-export library: "When you need to create a background tasks for an import or
 # export, use the Celery application defined in the myshop/celery.py file." This ensures that the import/export
 # tasks are sent to the correct Celery instance that you've already configured for your project.
