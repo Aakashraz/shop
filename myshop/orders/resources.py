@@ -8,4 +8,4 @@ class OrderResource(resources.ModelResource):
         fields = ('id', 'first_name', 'last_name', 'email', 'address', 'postal_code',
                   'city', 'paid', 'created', 'updated', 'stripe_id')
         export_order = ('id', 'first_name', 'last_name', 'email', 'address', 'postal_code',
-                        'city', 'paid', 'created', 'updated')
+                        'city', 'paid', 'created', 'updated', 'stripe_id')
