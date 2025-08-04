@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
 
+    'author',
     'import_export',
     'import_export_celery',
-
 
 ]
 
@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'author.middlewares.AuthorDefaultBackendMiddleware',
 ]
 
 ROOT_URLCONF = 'myshop.urls'
@@ -153,14 +154,54 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kathmandu'
 
+# CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+# This is the address of your message "post office" (the broker).
+# It tells Celery where to send new task requests.
+#
+# amqp://: The protocol used to talk to RabbitMQ.
+#
+# guest:guest: The default username and password for RabbitMQ.
+#
+# @localhost:5672: The location of the RabbitMQ server, in this case,
+# running on your own machine (localhost) on port 5672.
+#
+# CELERY_RESULT_BACKEND = 'rpc://'
+# This tells Celery where to store the results of a completed task (e.g., "Success", "Failed," or a return value).
+# Using rpc:// is a simple option where results are sent back directly to the client that requested the task.
+# However, these results are temporary and disappear once you've retrieved them.
+#
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# This specifies that Celery should only accept tasks formatted in JSON, a standard, human-readable data format.
+#
+# CELERY_TASK_SERIALIZER = 'json' & CELERY_RESULT_SERIALIZER = 'json'
+# These settings tell Celery to use the JSON format to package (serialize) the task itself and
+# its result before sending them over the network. This ensures all parts of your system can understand the data.
+#
+# CELERY_TIMEZONE = 'Asia/Kathmandu'
+# This sets the timezone for your tasks. It's crucial for scheduling tasks to run at
+# specific times, ensuring they execute correctly, according to your local time.
 
+
+
+# This dictionary is a registry. It tells the application which Django models
+# are allowed to be imported or exported as background jobs.
+# django-import-export-celery Configuration
 IMPORT_EXPORT_CELERY_MODELS = {
     "Order": {
         'app_label': 'orders',
         'model_name': 'Order',
-        'resource': 'orders.resources.OrderResource',
+        'resource': 'orders.resources.OrderResource',   # This is a common pattern in Django and Python libraries,
+        # where strings in configuration settings are lazily imported only when needed, rather than
+        # at the time the settings file is loaded.
     }
 }
+
+# Bulk import export Celery configuration
+IMPORT_EXPORT_CELERY_INIT_MODULE = 'myshop.celery'
+# This setting tells the django-import-export-celery library where to find your project's main Celeery application instance.
+# Essentially, you're telling the import-export library: "When you need to create a background tasks for an import or
+# export, use the Celery application defined in the myshop/celery.py file." This ensures that the import/export
+# tasks are sent to the correct Celery instance that you've already configured for your project.
 
 # Importing stripe credentials
 from decouple import config
