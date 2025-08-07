@@ -2,6 +2,20 @@ from celery import shared_task
 from django.core.mail import send_mail
 from .models import Order
 
+import logging
+from import_export_celery.tasks import run_import_job as original_import_job
+
+
+logger = logging.getLogger(__name__)
+
+@shared_task
+def run_import_job(*args, **kwargs):    # You've deliberately given your new task the exact same name as
+    # the original one. When Celery starts, it will discover this task in your project and use it instead
+    # of the default one from the library. This is a powerful technique called overriding or monkey patching.
+    logger.info(f"Task args: {args}, kwargs: {kwargs}")
+    result = original_import_job(*args, **kwargs)
+    logger.info(f"Task processed rows: {result or 'Unknown'}")
+    return result
 
 # It’s always recommended to only pass IDs to task functions and retrieve objects from the database
 # when the task is executed. By doing so, we avoid accessing outdated information since the data

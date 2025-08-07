@@ -226,7 +226,7 @@ LOGGING = {
             'level': 'INFO',
         },
     },
-    'logger': {
+    'loggers': {
         '': {
             'handlers': ['console'],
             'level': 'INFO',
