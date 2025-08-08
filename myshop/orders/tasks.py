@@ -4,6 +4,7 @@ from .models import Order
 
 import logging
 from import_export_celery.tasks import run_import_job as original_import_job
+from .resources import OrderResource
 
 
 logger = logging.getLogger(__name__)
@@ -13,8 +14,13 @@ def run_import_job(*args, **kwargs):    # You've deliberately given your new tas
     # the original one. When Celery starts, it will discover this task in your project and use it instead
     # of the default one from the library. This is a powerful technique called overriding or monkey patching.
     logger.info(f"Task args: {args}, kwargs: {kwargs}")
-    result = original_import_job(*args, **kwargs)
-    logger.info(f"Task processed rows: {result or 'Unknown'}")
+    try:
+        result = original_import_job(*args, **kwargs)
+        logger.info(f"Task processed rows: {result or 'Unknown'}")
+    except Exception as e:
+        logger.error(f"Error in run_import_job: {e}")
+        raise   # Re-raise to let Celery handle retries or failures
+
     return result
 
 # It’s always recommended to only pass IDs to task functions and retrieve objects from the database
@@ -46,3 +52,11 @@ def order_created(order_id):
 # @shared_task()
 # def test_task():
 #     return "celery rocks"
+
+# Another test method for celery import checking///////////////
+@shared_task
+def test_import():
+    print(f"OrderResource type: {type(OrderResource)}")
+    resource = OrderResource()
+    print("Resource instantiated successfully")
+    return "Test complete"
