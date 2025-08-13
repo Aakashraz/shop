@@ -4,17 +4,18 @@ from .models import Order
 
 import logging
 from importlib import import_module
+from pprint import pformat
 from import_export_celery.tasks import run_import_job as original_import_job
 
 
 logger = logging.getLogger(__name__)
 
-@shared_task(bind=True)
+@shared_task(bind=True, name="orders.tasks.debug_run_import_job")
 def run_import_job(self, *args, **kwargs):
-    from pprint import pformat
-    print("RAW KWARGS FROM CELERY:")
+    print("-----------------RAW KWARGS FROM CELERY:--------------------")
     print(pformat(kwargs))
-    ...
+    print("========================================================")
+    return None
 
 
 def get_resources_class(path):
@@ -35,7 +36,7 @@ def get_resources_class(path):
     return path
 
 
-@shared_task
+# @shared_task
 # def run_import_job(*args, **kwargs):    # You've deliberately given your new task the exact same name as
 #     # the original one. When Celery starts, it will discover this task in your project and use it instead
 #     # of the default one from the library. This is a powerful technique called overriding or monkey patching.
