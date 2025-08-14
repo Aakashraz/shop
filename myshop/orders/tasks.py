@@ -10,12 +10,29 @@ from import_export_celery.tasks import run_import_job as original_import_job
 
 logger = logging.getLogger(__name__)
 
-@shared_task(bind=True, name="orders.tasks.debug_run_import_job")
-def run_import_job(self, *args, **kwargs):
-    print("-----------------RAW KWARGS FROM CELERY:--------------------")
-    print(pformat(kwargs))
-    print("========================================================")
-    return None
+# @shared_task(bind=True, name="orders.tasks.debug_run_import_job")
+# def debug_wrapped_import_job(self, *args, **kwargs):
+#     logger.warning("--- Before library's run_import_job -----")
+#     logger.warning(pformat(kwargs))
+#     logger.warning("-----------------------------------------")
+#
+#     # only keep kwargs that match original_import_job's parameters
+#     allowed_kwargs = {k: v for k, v in kwargs.items() if k in ('pk', 'dry_run')}
+#
+#     try:
+#         result = original_import_job(*args, **allowed_kwargs)
+#     except Exception as e:
+#         logger.error(f"Error inside original_import_job: {e}", exc_info=True)
+#         raise
+#     logger.warning("--- After library's run_import_job -----")
+#     logger.warning(pformat(kwargs))
+#     logger.warning("------------------------------------------")
+#     return result
+
+    # print("-----------------RAW KWARGS FROM CELERY:--------------------")
+    # print(pformat(kwargs))
+    # print("========================================================")
+    # return None
 
 
 def get_resources_class(path):

@@ -232,6 +232,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'import_export_celery': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         'order.resources': {
             'handlers': ['console'],
             'level': 'INFO',
