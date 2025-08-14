@@ -2,6 +2,77 @@ from celery import shared_task
 from django.core.mail import send_mail
 from .models import Order
 
+import logging
+from importlib import import_module
+from pprint import pformat
+from import_export_celery.tasks import run_import_job as original_import_job
+
+
+logger = logging.getLogger(__name__)
+
+# @shared_task(bind=True, name="orders.tasks.debug_run_import_job")
+# def debug_wrapped_import_job(self, *args, **kwargs):
+#     logger.warning("--- Before library's run_import_job -----")
+#     logger.warning(pformat(kwargs))
+#     logger.warning("-----------------------------------------")
+#
+#     # only keep kwargs that match original_import_job's parameters
+#     allowed_kwargs = {k: v for k, v in kwargs.items() if k in ('pk', 'dry_run')}
+#
+#     try:
+#         result = original_import_job(*args, **allowed_kwargs)
+#     except Exception as e:
+#         logger.error(f"Error inside original_import_job: {e}", exc_info=True)
+#         raise
+#     logger.warning("--- After library's run_import_job -----")
+#     logger.warning(pformat(kwargs))
+#     logger.warning("------------------------------------------")
+#     return result
+
+    # print("-----------------RAW KWARGS FROM CELERY:--------------------")
+    # print(pformat(kwargs))
+    # print("========================================================")
+    # return None
+
+
+def get_resources_class(path):
+    """
+    Converts a resource string from settings.py  (e.g., 'orders.resources.OrderResource') to the actual class.
+    If the resource is already a class, returns it as is.
+    """
+    if isinstance(path, str):
+        try: 
+            module_name, class_name = path.rsplit('.',1)
+            module = import_module(module_name)
+            resource_class = getattr(module, class_name)
+            logger.debug(f"Resolved resource: {path} to {resource_class}")
+            return resource_class
+        except (ImportError, AttributeError) as e:
+            logger.error(f"Failed to import resource: {path}. Error: {e}")
+            raise
+    return path
+
+
+# @shared_task
+# def run_import_job(*args, **kwargs):    # You've deliberately given your new task the exact same name as
+#     # the original one. When Celery starts, it will discover this task in your project and use it instead
+#     # of the default one from the library. This is a powerful technique called overriding or monkey patching.
+#     logger.info(f"Task args: {args}, kwargs: {kwargs}")
+#
+#     # Look for 'resource' in kwargs because Celery's import-export task usually has something like:
+#     # run_import_job(dataset_id=..., resource="orders.resources.OrderResource")
+#     # Convert resource string to class if necessary (as 'resource' is now an actual class object)
+#     if 'resource' in kwargs:
+#         kwargs['resource'] = get_resources_class(kwargs['resource'])
+#
+#     try:
+#         result = original_import_job(*args, **kwargs)
+#         logger.info(f"Task processed rows: {result or 'Unknown'}")
+#     except Exception as e:
+#         logger.error(f"Error in run_import_job: {e}")
+#         raise   # Re-raise to let Celery handle retries or failures
+#
+#     return result
 
 # It’s always recommended to only pass IDs to task functions and retrieve objects from the database
 # when the task is executed. By doing so, we avoid accessing outdated information since the data
@@ -32,3 +103,12 @@ def order_created(order_id):
 # @shared_task()
 # def test_task():
 #     return "celery rocks"
+
+# Another test method for celery import checking///////////////
+# @shared_task
+# def test_import():
+#     print(f"OrderResource type: {type(OrderResource)}")
+#     resource = OrderResource()
+#     print("Resource instantiated successfully")
+#     return "Test complete"
+

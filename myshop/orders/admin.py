@@ -10,6 +10,9 @@ from import_export.admin import ImportExportModelAdmin
 from .resources import OrderResource
 
 
+print(f"OrderResource type: {type(OrderResource)}")
+
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     raw_id_fields = ['product']
