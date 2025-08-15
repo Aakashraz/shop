@@ -237,7 +237,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'order.resources': {
+        'orders.resources': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
