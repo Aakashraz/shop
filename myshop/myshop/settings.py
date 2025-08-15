@@ -190,11 +190,13 @@ IMPORT_EXPORT_CELERY_MODELS = {
     "Order": {
         'app_label': 'orders',
         'model_name': 'Order',
-        'resource': 'orders.resources.OrderResource',   # This is a common pattern in Django and Python libraries,
+        'resource': 'orders.resources.MinimalOrderResource',   # This is a common pattern in Django and Python libraries,
         # where strings in configuration settings are lazily imported only when needed, rather than
         # at the time the settings file is loaded.
     }
 }
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 # Bulk import export Celery configuration
 IMPORT_EXPORT_CELERY_INIT_MODULE = 'myshop.celery'
