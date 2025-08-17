@@ -20,3 +20,59 @@ def patched_run_import_job(pk, dry_run=True):
         logger.info(f"Processing import job {pk}, dry_run={dry_run}")
 
         # Get the resource class from the settings
+        from django.conf import settings
+        model_config = None
+
+        for model_name, config in settings.IMPORT_EXPORT_CELERY_MODELS.items():
+            # import_job.model is a string from the ImportJob model,
+            # typically in the format app_label.ModelName (e.g., orders.Order).
+            # .split('.') splits this string into a list, e.g., ['orders', 'Order']
+            if config['app_label'] == import_job.model.split('.')[0] and config['model_name'] == import_job.model.split('.')[-1]:
+                model_config = config   # This ensures the config corresponds to the model being imported.
+                break
+
+        if not model_config:
+            raise ValueError(f"No configuration found for model {import_job.model}")
+
+        # Import the resource class
+        resource_path = model_config['resource']
+        module_name, class_name = resource_path.rsplit('.', 1)
+        module = import_module(module_name)
+        resource_class = getattr(module, class_name)
+
+        # Create resource instance
+        resource = resource_class()
+        logger.info(f"Created resource class: {resource_class}")
+
+        # Read the file content
+        with import_job.file.open('r') as f:
+            file_content = f.read()
+
+        # create dataset
+        dataset = tablib.Dataset()
+        dataset.load(file_content, format=import_job.format)
+        logger.info(f"Loaded dataset with {len(dataset)} rows")
+
+        # Import the data
+        result = resource.import_data(dataset, dry_run=dry_run)
+        logger.info(f"Import result - has errors: {result.has_errors()}")
+
+        # Update job status based on results
+        if result.has_errors():
+            error_message = []
+            for row_errors in result.row_errors():
+                error_message.append(f"Row {row_errors[0]}: {row_errors[1]}")
+
+            import_job.errors = "; ".join(error_message[:5])    # Limit to first five errors
+            import_job.job_status = "[Dry run] Import error" if dry_run else "Import error"
+            logger.error(f"Import errors: {import_job.errors}")
+
+        else:
+            # Success
+            totals = result.totals
+            summary_parts = []
+            if totals.get('new', 0) > 0:
+                summary_parts.append(f"Created: {totals['new']}")
+
+
+
