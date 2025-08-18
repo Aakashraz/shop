@@ -73,6 +73,37 @@ def patched_run_import_job(pk, dry_run=True):
             summary_parts = []
             if totals.get('new', 0) > 0:
                 summary_parts.append(f"Created: {totals['new']}")
+            if totals.get('update', 0) > 0:
+                summary_parts.append(f"Updated: {totals['update']}")
+            if totals.get('skip', 0) > 0:
+                summary_parts.append(f"Skipped: {totals['skip']}")
+
+            import_job.change_summary = "; ".join(summary_parts) if summary_parts else "No changes"
+            import_job.job_status = "[Dry run] Import finished" if dry_run else "Import finished"
+            import_job.errors = ""
+            logger.info(f"Import successful: {import_job.change_summary}")
 
 
+        # Mark as imported if not dry run
+        if not dry_run:
+            import_job.imported = True
+
+        import_job.save()
+        return result
+
+    except Exception as e:
+        logger.error(f"Import job {pk} failed: {str(e)}")
+        try:
+            import_job = ImportJob.objects.get(pk=pk)
+            import_job.errors = f"Import error: {str(e)}"
+            import_job.job_status = "Import error"
+            import_job.save()
+        except:
+            pass
+        raise
+
+
+# Replace the original task with our patched version
+import import_export_celery.tasks
+import_export_celery.tasks.run_import_job = patched_run_import_job
 
