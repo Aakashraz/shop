@@ -64,14 +64,22 @@ def patched_run_import_job(pk, dry_run=True):
                 error_message.append(f"Row {row_errors[0]}: {row_errors[1]}")
 
             import_job.errors = "; ".join(error_message[:5])    # Limit to first five errors
+            # Joins the first 5 error messages with semicolons and sets them to import_job.errors:
+
             import_job.job_status = "[Dry run] Import error" if dry_run else "Import error"
+            # This import_job.job_status is not printed/logged because, django-import-export-celery
+            # relies on the admin interface or queries to view job status (e.g. in a Django admin panel, users see status updates).
+
             logger.error(f"Import errors: {import_job.errors}")
 
         else:
             # Success
             totals = result.totals
+            # Gets the import statistics dictionary (e.g., {'new': 3, 'update': 2, 'skip': 1}) from the result.
+
             summary_parts = []
             if totals.get('new', 0) > 0:
+                # Checks if new records were created (defaults to 0 if key missing).
                 summary_parts.append(f"Created: {totals['new']}")
             if totals.get('update', 0) > 0:
                 summary_parts.append(f"Updated: {totals['update']}")
@@ -80,15 +88,19 @@ def patched_run_import_job(pk, dry_run=True):
 
             import_job.change_summary = "; ".join(summary_parts) if summary_parts else "No changes"
             import_job.job_status = "[Dry run] Import finished" if dry_run else "Import finished"
-            import_job.errors = ""
+            import_job.errors = ""  # Clears any previous errors on success.
             logger.info(f"Import successful: {import_job.change_summary}")
 
 
         # Mark as imported if not dry run
         if not dry_run:
             import_job.imported = True
+            # Flags job as completed. Needed to prevent re-running or mark as done
+            # in workflows; without DB, the system might treat it as pending forever.
 
         import_job.save()
+        # Commits all changes to DB. Without this, updates are in-memory only -- task ends, changes disappear,
+        # and admin sees nothing new.
         return result
 
     except Exception as e:
@@ -98,6 +110,11 @@ def patched_run_import_job(pk, dry_run=True):
             import_job.errors = f"Import error: {str(e)}"
             import_job.job_status = "Import error"
             import_job.save()
+        # "Refetches import_job because the outer exception might have occurred before import_job was fetched or
+        # if DB issues arose. Ensures we can still update it."
+        # "The main code might crash right at the start, before it even laods import_job from the database.
+        # Without refetching, you'd have nothing to update."
+
         except:
             pass
         raise
