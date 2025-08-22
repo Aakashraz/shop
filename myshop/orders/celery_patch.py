@@ -23,7 +23,15 @@ def patched_run_import_job(pk, dry_run=True):
         from django.conf import settings
         model_config = None
 
+        logger.info(f"Looking for model: '{import_job.model}'")
+        logger.info(f"Available configurations: {list(settings.IMPORT_EXPORT_CELERY_MODELS.keys())}")
+        logger.info(f"Model split result: {import_job.model.split('.')}")
+
         for model_name, config in settings.IMPORT_EXPORT_CELERY_MODELS.items():
+            # Checking the import_job.model
+            logger.info(f"Checking config for {model_name}: app_label='{config['app_label']}', model_name='{config['model_name']}'")
+            logger.info(f"Comparing with: app_label='{import_job.model.split('.')[0]}', model_name='{import_job.model.split('.')[-1]}'")
+
             # import_job.model is a string from the ImportJob model,
             # typically in the format app_label.ModelName (e.g., orders.Order).
             # .split('.') splits this string into a list, e.g., ['orders', 'Order']
