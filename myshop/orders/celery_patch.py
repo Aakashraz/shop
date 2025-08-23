@@ -27,17 +27,40 @@ def patched_run_import_job(pk, dry_run=True):
         logger.info(f"Available configurations: {list(settings.IMPORT_EXPORT_CELERY_MODELS.keys())}")
         logger.info(f"Model split result: {import_job.model.split('.')}")
 
-        for model_name, config in settings.IMPORT_EXPORT_CELERY_MODELS.items():
-            # Checking the import_job.model
-            logger.info(f"Checking config for {model_name}: app_label='{config['app_label']}', model_name='{config['model_name']}'")
-            logger.info(f"Comparing with: app_label='{import_job.model.split('.')[0]}', model_name='{import_job.model.split('.')[-1]}'")
+        # ----------------- This is replaced with the below lambda function and for loop. ------------
+        # for model_name, config in settings.IMPORT_EXPORT_CELERY_MODELS.items():
+        #     # Checking the import_job.model
+        #     logger.info(f"Checking config for {model_name}: app_label='{config['app_label']}', model_name='{config['model_name']}'")
+        #     logger.info(f"Comparing with: app_label='{import_job.model.split('.')[0]}', model_name='{import_job.model.split('.')[-1]}'")
 
-            # import_job.model is a string from the ImportJob model,
-            # typically in the format app_label.ModelName (e.g., orders.Order).
-            # .split('.') splits this string into a list, e.g., ['orders', 'Order']
-            if config['app_label'] == import_job.model.split('.')[0] and config['model_name'] == import_job.model.split('.')[-1]:
-                model_config = config   # This ensures the config corresponds to the model being imported.
+        # import_job.model is a string from the ImportJob model,
+        # typically in the format app_label.ModelName (e.g., orders.Order).
+        # .split('.') splits this string into a list, e.g., ['orders', 'Order']
+        if '.' in import_job.model:
+            # Full path like "orders.Order"
+            app_label, model_name = import_job.model.rsplit('.', 1)
+            match_condition = lambda config: (config['app_label'] == app_label and
+                                              config['model_name'] == model_name)
+        else:
+            # Just model name like "Order"
+            model_name = import_job.model   # This gets "Captured" by the lambda
+            match_condition = lambda config: config['model_name'] == model_name
+            # Lambda now "remembers" that model_name = "Order"
+
+        for config_key, config in settings.IMPORT_EXPORT_CELERY_MODELS.items():
+            if match_condition(config):
+                model_config = config
+                logger.info(f"Found matching config: {config_key}")
                 break
+        # The above if match_condition(config):
+        # This expands to:
+        # if (lambda config: config['model_name'] == model_name)(config)
+        # Which becomes:
+        # if (lambda config: config['model_name'] == "Order")(config)
+        # When we call it with config, it substitutes:
+        # if config['model_name'] == "Order"
+        # Which evaluates to:
+        # "Order" == "Order"
 
         if not model_config:
             raise ValueError(f"No configuration found for model {import_job.model}")
@@ -58,6 +81,17 @@ def patched_run_import_job(pk, dry_run=True):
 
         # create dataset
         dataset = tablib.Dataset()
+        # Convert MIME type to tablib format
+        format_mapping = {
+            'text/csv': 'csv',
+            'application/vnd.ms-excel': 'xls',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+            'text/plain': 'csv',    # Sometimes CSV is stored as text/plain
+        }
+        # Get the correct format for tablib
+        tablib_format = format_mapping.get(import_job.format, import_job.format)
+        logger.info(f"Original format: '{import_job.format}', Using: '{tablib_format}'")
+        # Use the converted format
         dataset.load(file_content, format=import_job.format)
         logger.info(f"Loaded dataset with {len(dataset)} rows")
 
