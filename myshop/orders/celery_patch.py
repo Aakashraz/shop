@@ -27,15 +27,6 @@ def patched_run_import_job(pk, dry_run=True):
         logger.info(f"Available configurations: {list(settings.IMPORT_EXPORT_CELERY_MODELS.keys())}")
         logger.info(f"Model split result: {import_job.model.split('.')}")
 
-        # ----------------- This is replaced with the below lambda function and for loop. ------------
-        # for model_name, config in settings.IMPORT_EXPORT_CELERY_MODELS.items():
-        #     # Checking the import_job.model
-        #     logger.info(f"Checking config for {model_name}: app_label='{config['app_label']}', model_name='{config['model_name']}'")
-        #     logger.info(f"Comparing with: app_label='{import_job.model.split('.')[0]}', model_name='{import_job.model.split('.')[-1]}'")
-
-        # import_job.model is a string from the ImportJob model,
-        # typically in the format app_label.ModelName (e.g., orders.Order).
-        # .split('.') splits this string into a list, e.g., ['orders', 'Order']
         if '.' in import_job.model:
             # Full path like "orders.Order"
             app_label, model_name = import_job.model.rsplit('.', 1)
@@ -88,11 +79,14 @@ def patched_run_import_job(pk, dry_run=True):
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
             'text/plain': 'csv',    # Sometimes CSV is stored as text/plain
         }
+        # THIS Maps MIME types(like 'text/csv') to tablib format names(like 'csv')
+        # Falls back to the original format if no mapping exists
+
         # Get the correct format for tablib
         tablib_format = format_mapping.get(import_job.format, import_job.format)
         logger.info(f"Original format: '{import_job.format}', Using: '{tablib_format}'")
         # Use the converted format
-        dataset.load(file_content, format=import_job.format)
+        dataset.load(file_content, format=tablib_format)
         logger.info(f"Loaded dataset with {len(dataset)} rows")
 
         # Import the data
