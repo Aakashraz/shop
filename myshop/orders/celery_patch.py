@@ -6,6 +6,8 @@ from import_export_celery.models import ImportJob
 from importlib import import_module
 import tablib
 import logging
+from django.utils import timezone
+
 
 
 logger = logging.getLogger(__name__)
@@ -130,14 +132,20 @@ def patched_run_import_job(pk, dry_run=True):
 
         # Mark as imported if not dry run
         if not dry_run:
-            import_job.imported = True
-            # Flags job as completed. Needed to prevent re-running or mark as done
-            # in workflows; without DB, the system might treat it as pending forever.
+            import_job.imported = timezone.now()    # Set completion timestamp
+        else:
+            import_job.imported = None  # Keep null for dry runs
 
         import_job.save()
         # Commits all changes to DB. Without this, updates are in-memory only -- task ends, changes disappear,
         # and admin sees nothing new.
-        return result
+        return {
+            'success': True,
+            'has_errors': result.has_errors(),
+            'totals': result.totals,
+            'row_count': len(dataset) if 'dataset' in locals() else 0,
+            'dry_run': dry_run
+        }
 
     except Exception as e:
         logger.error(f"Import job {pk} failed: {str(e)}")
