@@ -168,3 +168,8 @@ def patched_run_import_job(pk, dry_run=True):
 import import_export_celery.tasks
 import_export_celery.tasks.run_import_job = patched_run_import_job
 
+# For debugging:
+logger.info(f"PATCHED LOADED: {patched_run_import_job}")
+logger.info(f"ORIGINAL TASK: {import_export_celery.tasks.run_import_job}")
+logger.info(f"Are they the same? {import_export_celery.tasks.run_import_job is patched_run_import_job}")
+
