@@ -10,4 +10,6 @@ class OrdersConfig(AppConfig):
             from . import celery_patch
             print('Celery patched loaded successfully')
         except ImportError as e:
-            print(f"Celery patch failed to load: {e}")
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Could not lead celery_patch: {e}")

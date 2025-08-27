@@ -60,9 +60,15 @@ def patched_run_import_job(pk, dry_run=True):
 
         # Import the resource class
         resource_path = model_config['resource']
-        module_name, class_name = resource_path.rsplit('.', 1)
-        module = import_module(module_name)
-        resource_class = getattr(module, class_name)
+        if callable(resource_path):
+            resource_class = resource_path()
+            # calling get_order_resource() in settings.py
+            # directly assigning the OrderResource class from the settings.py instead of the string
+            # To remove the 'str' object not callable errors
+        else:
+            module_name, class_name = resource_path.rsplit('.', 1)
+            module = import_module(module_name)
+            resource_class = getattr(module, class_name)
 
         # Create resource instance
         resource = resource_class()
@@ -148,7 +154,7 @@ def patched_run_import_job(pk, dry_run=True):
         }
 
     except Exception as e:
-        logger.error(f"Import job {pk} failed: {str(e)}")
+        logger.error(f"Import job {pk} failed: {str(e)}", exc_info=True)
         try:
             import_job = ImportJob.objects.get(pk=pk)
             import_job.errors = f"Import error: {str(e)}"
@@ -172,4 +178,14 @@ import_export_celery.tasks.run_import_job = patched_run_import_job
 logger.info(f"PATCHED LOADED: {patched_run_import_job}")
 logger.info(f"ORIGINAL TASK: {import_export_celery.tasks.run_import_job}")
 logger.info(f"Are they the same? {import_export_celery.tasks.run_import_job is patched_run_import_job}")
+
+# # Replace it with the conditional patching:
+# def apply_patch():
+#     import import_export_celery.tasks
+#     import_export_celery.tasks.run_import_job = patched_run_import_job
+#     logger.info("Celery patch applied successfully")
+#
+# # Apply the patch only when this module is imported for task execution.
+# if __name__ != '__main__':
+#     apply_patch()
 

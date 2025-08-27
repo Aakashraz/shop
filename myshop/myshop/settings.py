@@ -93,6 +93,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        # ADD the TIMEOUT option (value is in seconds) OR USE another sophisticated DB like PostgreSQL or MySQL
+        'OPTIONS': {
+            'timeout': 20,  # e.g., wait upto 20 secs
+        }
     }
 }
 
@@ -181,7 +185,9 @@ CELERY_TIMEZONE = 'Asia/Kathmandu'
 # This sets the timezone for your tasks. It's crucial for scheduling tasks to run at
 # specific times, ensuring they execute correctly, according to your local time.
 
-
+def get_order_resource():
+    from orders.resources import OrderResource
+    return OrderResource
 
 # This dictionary is a registry. It tells the application which Django models
 # are allowed to be imported or exported as background jobs.
@@ -190,13 +196,14 @@ IMPORT_EXPORT_CELERY_MODELS = {
     "Order": {
         'app_label': 'orders',
         'model_name': 'Order',
-        'resource': 'orders.resources.MinimalOrderResource',   # This is a common pattern in Django and Python libraries,
+        'resource': get_order_resource,   # This is a common pattern in Django and Python libraries,
         # where strings in configuration settings are lazily imported only when needed, rather than
         # at the time the settings file is loaded.
     }
 }
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
+IMPORT_DRY_RUN_FIRST_TIME = False
 
 # Bulk import export Celery configuration
 IMPORT_EXPORT_CELERY_INIT_MODULE = 'myshop.celery'

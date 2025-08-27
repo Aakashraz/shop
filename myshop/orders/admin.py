@@ -87,7 +87,7 @@ order_payment.short_description = 'Stripe payment'
 
 @admin.register(Order)
 class OrderAdmin(ImportExportModelAdmin):   # admin.ModelAdmin changed to ImportExportModelAdmin to enable bulk import/export
-    resource_class = MinimalOrderResource
+    resource_class = OrderResource
     list_display = [
         'id',
         'first_name',
