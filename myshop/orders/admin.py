@@ -7,8 +7,7 @@ from django.utils.safestring import mark_safe
 
 from import_export_celery.admin_actions import create_export_job_action
 from import_export.admin import ImportExportModelAdmin
-from .resources import OrderResource
-
+from .resources import OrderResource, MinimalOrderResource
 
 print(f"OrderResource type: {type(OrderResource)}")
 
