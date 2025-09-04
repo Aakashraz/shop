@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib import admin
 from .models import Order, OrderItem
 from django.utils.safestring import mark_safe
+from django.urls import reverse
 
 from import_export_celery.admin_actions import create_export_job_action
 from import_export.admin import ImportExportModelAdmin
@@ -84,6 +85,16 @@ order_payment.short_description = 'Stripe payment'
 # ------ Remove the custom export_to_csv function since the django-import-export library handles this. ------
 
 
+def order_detail(obj):
+    url = reverse('orders:admin_order_detail', args=[obj.id])
+    return mark_safe(f'<a href="{url}">View</a>')
+
+
+def order_pdf(obj):
+    url = reverse('orders:admin_order_pdf', args=[obj.id])
+    return mark_safe(f'<a href="{url}">PDF</a>')
+order_pdf.short_description = 'Invoice'
+
 
 @admin.register(Order)
 class OrderAdmin(ImportExportModelAdmin):   # admin.ModelAdmin changed to ImportExportModelAdmin to enable bulk import/export
@@ -100,6 +111,9 @@ class OrderAdmin(ImportExportModelAdmin):   # admin.ModelAdmin changed to Import
         order_payment,
         'created',
         'updated',
+        order_detail,
+        order_pdf,
+
     ]
     list_filter = ['paid', 'created', 'updated']
     actions = [create_export_job_action]

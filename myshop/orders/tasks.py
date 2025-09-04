@@ -35,13 +35,14 @@ logger = logging.getLogger(__name__)
     # return None
 
 
+# THIS JOB IS REPLACED BY THE celery_patch.py file
 def get_resources_class(path):
     """
-    Converts a resource string from settings.py  (e.g., 'orders.resources.OrderResource') to the actual class.
-    If the resource is already a class, returns it as is.
+    Converts a resource string from settings.py (e.g., 'orders.resources.OrderResource') to the actual class.
+    If the resource is already a class, return it as is.
     """
     if isinstance(path, str):
-        try: 
+        try:
             module_name, class_name = path.rsplit('.',1)
             module = import_module(module_name)
             resource_class = getattr(module, class_name)
@@ -51,6 +52,7 @@ def get_resources_class(path):
             logger.error(f"Failed to import resource: {path}. Error: {e}")
             raise
     return path
+
 
 
 # @shared_task
