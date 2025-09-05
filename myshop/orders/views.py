@@ -64,28 +64,26 @@ def admin_order_detail(request, order_id):
     )
 
 
+# print("WeasyPrint HTML:", weasyprint.HTML)
+# print("WeasyPrint CSS:", weasyprint.CSS)
+
 # Rendering PDF files
 @staff_member_required
 def admin_order_pdf(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     # Render HTML template
     html = render_to_string('orders/order/pdf.html', {'order': order})
-    # Create HTTP response with PDF content type
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename=order_{order_id}.pdf'
 
     # Generate PDF
     try:
-        # Locate the CSS file
-        css_path = finders.find('css/pdf.css')
-        if not css_path:
-            raise FileNotFoundError("CSS file not found")
-
-        # Generate PDF with WeasyPrint
-        weasyprint.HTML(string=html).write_pdf(
-            target=response,
-            stylesheets=[weasyprint.CSS(css_path)]
+        # Generate PDF with WeasyPrint - write.pdf() return bytes
+        pdf_bytes = weasyprint.HTML(string=html).write_pdf(
+            stylesheets=[weasyprint.CSS(finders.find('css/pdf.css'))]
         )
+        # Create HTTP response with PDF content type
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename=order_{order_id}.pdf'
+
     except FileNotFoundError as e:
         return HttpResponse(str(e), status=500)
     except Exception as e:
