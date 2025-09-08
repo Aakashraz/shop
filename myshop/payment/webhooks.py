@@ -6,15 +6,20 @@ from orders.models import Order
 from .tasks import payment_completed
 
 
+
+# This(csrf_exempt) -  decorator tells Django to make an exception and allow this request to come through.
 @csrf_exempt
 def stripe_webhook(request):
-    payload = request.body
-    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    payload = request.body  # payload - The raw data sent by Stripe.
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']  # A unique digital signature that Stripe creates using
+    # the payload and a secret key (STRIPE_WEBHOOK_SECRET) that only you and Stripe know.
     event = None
 
     try:
         # The stripe.Webhook.construct_event() method is a helper provided by Stripe's SDK,
-        # designed to simplify the process of verifying webhook requests.
+        # designed to simplify the process of verifying webhook requests. This function performs
+        # a "secret handshake". It recalculates the signature using the same secret key. If its
+        # calculated signature matches the one Stripe sent in the header, the request is verified as authentic.
         #
         # To verify the event's signature header. If the event's payload or the signature is invalid,
         # we return an HTTP 400 Bad response. Otherwise, we return an HTTP 200 OK response.
@@ -28,7 +33,7 @@ def stripe_webhook(request):
         # Invalid Signature
         return HttpResponse(status=400)
 
-    if event.type == 'checkout.session.completed':
+    if event.type == 'checkout.session.completed':  # Checks if this is the event for a completed checkout.
         session = event.data.object
         if (
             session.mode == 'payment'
@@ -48,4 +53,5 @@ def stripe_webhook(request):
             # launch an asynchronous task
             payment_completed.delay(order.id)
 
-    return HttpResponse(status=200)
+    return HttpResponse(status=200) # If Stripe doesn't receive this 200 response, it will assume
+    # the delivery failed and will try to send the same event again, which could lead to duplicate actions.
