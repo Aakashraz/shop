@@ -15,6 +15,8 @@ stripe.api_version = settings.STRIPE_API_VERSION
 def payment_process(request):
     order_id = request.session.get('order_id')
     # Optimized query: prefetch related items and their products
+    # “Get me the order with this ID. While fetching it, also prefetch its related order items
+    # and their products in advance. If no such order exists, return a 404 error.”
     order = get_object_or_404(
         Order.objects.prefetch_related('items__product'), id=order_id
     )
