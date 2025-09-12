@@ -8,5 +8,6 @@ stripe==9.3.0
 python-decouple==3.8
 WeasyPrint==61.2
 pydyf==0.10.0
+redis==5.0.4
 
 django-import-export~=4.3.7
