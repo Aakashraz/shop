@@ -1,6 +1,8 @@
 from decimal import Decimal
 from django.conf import settings
 from shop.models import Product
+from coupons.models import Coupon
+
 
 
 class Cart:
@@ -15,6 +17,8 @@ class Cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
 
         self.cart = cart
+        # store current applied coupon
+        self.coupon_id = self.session.get('coupon_id')
 
     # Example of self.cart:
     # self.cart = {
@@ -90,6 +94,13 @@ class Cart:
             print(f'item from the __iter__ method: {item}')
             # Instead of returning a full list, this yields one cart item at a time
             # (makes the class memory efficient and iterable).
+            # Each item yielded looks like:
+            # {
+            #     'quantity': 2,
+            #     'price': Decimal('10.99'),
+            #     'product': <Product object>,
+            #     'total_price': Decimal('21.98')
+            # }
 
 
     # custom __len__() method to return the total number of items stored in the cart.
@@ -116,3 +127,28 @@ class Cart:
         # remove cart from session
         del self.session[settings.CART_SESSION_ID]
         self.save()
+
+
+    # @property turns a method into something that looks and behaves like a normal attribute, but
+    # still runs login when accessed. Here, it's used so you can treat coupon as a simple attribute
+    # of the cart, even though it's actually doing a database fetch.
+    @property
+    def coupon(self):
+        if self.coupon_id:
+            try:
+                return Coupon.objects.get(id=self.coupon_id)
+            except Coupon.DoesNotExist:
+                pass
+        return None
+
+
+    def get_discount(self):
+        if self.coupon:
+            return (
+                self.coupon.discount / Decimal(100)
+            ) * self.get_total_price()
+        return Decimal(0)
+
+
+    def get_total_price_after_discount(self):
+        return self.get_total_price() - self.get_discount()
