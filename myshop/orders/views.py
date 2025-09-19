@@ -19,7 +19,11 @@ def order_create(request):
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in cart:   # this calls your __iter__ above from cart.py
                 # each item looks like:
                 # item from the __iter__ method: {'quantity': 5, 'price': Decimal('50.00'),
