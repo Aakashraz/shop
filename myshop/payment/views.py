@@ -55,10 +55,19 @@ def payment_process(request):
         if order.coupon:
             stripe_coupon = stripe.Coupon.create(
                 name=order.coupon.code,
-                percent_off=order.discount,
+                percent_off=order.discount, # This is percentage-based only; for fixed amounts, use amount_off instead.
                 duration='once'
             )
+
             session_data['discounts'] = [{'coupon': stripe_coupon.id}]
+        # stripe_coupon.id: The value is the unique ID of the coupon created earlier via stripe.Coupon.create(). This is
+        # Stripe-generated, not your app's coupon ID, ensuring the correct cloud-stored coupon is linked.
+        # The key 'coupon' is non-negotiable-- using another key (e.g.,'discount_id') causes API errors. The ID must
+        # exist in Strip's system; otherwise, session creation fails (confusing if not handled, e.g., with try/except).
+        # The list structure ( [{}] ) supports multiple coupons/promotions, but single-coupon use is common for
+        # one-time payments.
+        #
+        # 'discount' is a separate array of dicts: key 'coupon' expects Stripe-generated ID (e.g., "coupon_abc123"), not app's.
 
         # create a Stripe checkout session
         session = stripe.checkout.Session.create(**session_data)

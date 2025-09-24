@@ -15,6 +15,8 @@ from .tasks import order_created
 
 def order_create(request):
     # Retrieve the current cart from the session with cart = Cart(request).
+    # Instantiates a Cart object that fetches session-stored cart data via request.session. No modification--pure retrieval.
+    # Cart class wraps session logic(e.g., self.cart=self.session.get('cart', {})), handling empty cases by defaulting to {}.
     cart = Cart(request)
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
