@@ -257,3 +257,9 @@ LOGGING = {
         },
     },
 }
+
+
+# Redis Configuration
+REDIS_HOST = '10.255.255.254'
+REDIS_PORT = 6379
+REDIS_DB = 0
