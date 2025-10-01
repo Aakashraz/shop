@@ -14,7 +14,7 @@ class Recommender:
     def get_product_key(self, id):
         return f'product:{id}:purchased_with'   # Generates a unique Redis key for each product.
 
-    def product_bought(self, products):
+    def products_bought(self, products):
         product_ids = [p.id for p in products]  # This grabs just the numeric IDs for efficiency.
         for product_id in product_ids:
             for with_id in product_ids:
@@ -25,7 +25,7 @@ class Recommender:
                         self.get_product_key(product_id), 1, with_id
                     )
 
-    def suggest_product_for(self, products, max_results=6):
+    def suggest_products_for(self, products, max_results=6):
         product_ids = [p.id for p in products]
         if len(products) == 1:
             # only 1 product
@@ -73,4 +73,7 @@ class Recommender:
         return suggested_products
 
 
+    def clear_purchases(self):
+        for id in Product.objects.values_list('id', flat=True):
+            r.delete(self.get_product_key(id))  # You only need IDs for key generation -- no other data to delete it.
 
