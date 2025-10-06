@@ -54,6 +54,9 @@ def stripe_webhook(request):
             order.save()
 
             # save item bought for product recommendations
+            # when a new order payment is confirmed; you retrieve the Product objects associated with the order items.
+            # Then, you create an instance of the Recommender class and call the products_bought() method to store
+            # the products bought together in Redis.
             product_ids = order.items.values_list('product_id')
             products = Product.objects.filter(id__in=product_ids)
             r = Recommender()
