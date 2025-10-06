@@ -15,11 +15,17 @@ from .tasks import order_created
 
 def order_create(request):
     # Retrieve the current cart from the session with cart = Cart(request).
+    # Instantiates a Cart object that fetches session-stored cart data via request.session. No modification--pure retrieval.
+    # Cart class wraps session logic(e.g., self.cart=self.session.get('cart', {})), handling empty cases by defaulting to {}.
     cart = Cart(request)
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in cart:   # this calls your __iter__ above from cart.py
                 # each item looks like:
                 # item from the __iter__ method: {'quantity': 5, 'price': Decimal('50.00'),

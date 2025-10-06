@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from orders.models import Order
 from .tasks import payment_completed
+from shop.models import Product
+from shop.recommender import Recommender
 
 
 
@@ -50,6 +52,16 @@ def stripe_webhook(request):
             # store Stripe payment ID
             order.stripe_id = session.payment_intent
             order.save()
+
+            # save item bought for product recommendations
+            # when a new order payment is confirmed; you retrieve the Product objects associated with the order items.
+            # Then, you create an instance of the Recommender class and call the products_bought() method to store
+            # the products bought together in Redis.
+            product_ids = order.items.values_list('product_id')
+            products = Product.objects.filter(id__in=product_ids)
+            r = Recommender()
+            r.products_bought(products)
+
             # launch an asynchronous task
             payment_completed.delay(order.id)
 

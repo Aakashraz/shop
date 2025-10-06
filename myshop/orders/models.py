@@ -18,7 +18,7 @@ class Order(models.Model):
     # To reference stripe payments in orders
     stripe_id = models.CharField(max_length=250, blank=True)
     coupon = models.ForeignKey(
-        Coupon, related_name='coupon', null=True,blank=True, on_delete=models.SET_NULL
+        Coupon, related_name='orders', null=True,blank=True, on_delete=models.SET_NULL
     )
     # The discount field is stored in the related Coupon object, but you can include it
     # in the Order model to preserve it if the coupon has been modified or deleted. You
