@@ -18,6 +18,9 @@
                         <a href="{% url 'cart:cart_detail' %}">
                             {% blocktranslate with total=cart.get_total_price count items=total_items %}
                             <!-- count items=... - Special: marks items as the plural counter-->
+                            <!-- count: allows you to set a variable for counting objects for Django to
+                                select the right plural form. -->
+<!--You define 'items' as you counting variable (for pluralization purposes), and you give it the value from 'total_items'.-->
                                 {{ items }} item, ${{ total }}
                             {% plural %}
                                 {{ items }} items, ${{ total }}
