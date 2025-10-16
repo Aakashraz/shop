@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -63,6 +65,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'author.middlewares.AuthorDefaultBackendMiddleware',
 ]
+# The order of middleware classes is very important because each middleware can depend on data set by
+# another middleware that was executed previously. Middleware is applied for requests in order of
+# appearance in MIDDLEWARE, and in reverse order for responses.
+
 
 ROOT_URLCONF = 'myshop.urls'
 
@@ -124,7 +130,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('es', _('Spanish')),
+]
+# You're saying, "my app supports generic English and Spanish."
+# If your LANGUAGE_CODE = 'en-us' but LANGUAGES only have 'en', there's a mismatch.
+# Django might not find an exact match for 'en-us' in your available languages.
+# Django can fall back from 'en-us' to en, but it's cleaner to be consistent.
 
 TIME_ZONE = 'Asia/Kathmandu'
 
@@ -263,3 +278,10 @@ LOGGING = {
 REDIS_HOST = '10.255.255.254'   # 'localhost' is not used here instead IP of the WSL environment
 REDIS_PORT = 6379
 REDIS_DB = 0
+
+
+# The LOCALE_PATHS setting specifies the directories where Django has to look for translation files.
+# Locale paths that appear first have the highest precedence.
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]

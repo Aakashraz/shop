@@ -9,5 +9,8 @@ python-decouple==3.8
 WeasyPrint==61.2
 pydyf==0.10.0
 redis==5.0.4
+django-rosetta==0.10.0
+django-parler==2.3
+django-localflavor==4.0
 
 django-import-export~=4.3.7
