@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-09 11:35+0000\n"
+"POT-Creation-Date: 2025-10-20 09:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,10 +17,190 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cart/forms.py:19 cart/templates/cart/detail.html:15
+#: payment/templates/payment/process.html:14
+msgid "Quantity"
+msgstr ""
+
+#: cart/templates/cart/detail.html:5
+msgid "YOUR shopping CART"
+msgstr ""
+
+#: cart/templates/cart/detail.html:9
+msgid "Your shopping cart"
+msgstr ""
+
+#: cart/templates/cart/detail.html:13 payment/templates/payment/process.html:11
+msgid "Image"
+msgstr ""
+
+#: cart/templates/cart/detail.html:14 payment/templates/payment/process.html:12
+msgid "Product"
+msgstr ""
+
+#: cart/templates/cart/detail.html:16 cart/templates/cart/detail.html:49
+msgid "Remove"
+msgstr ""
+
+#: cart/templates/cart/detail.html:17
+msgid "Unit Price"
+msgstr ""
+
+#: cart/templates/cart/detail.html:18 payment/templates/payment/process.html:13
+msgid "Price"
+msgstr ""
+
+#: cart/templates/cart/detail.html:43
+msgid "Update"
+msgstr ""
+
+#: cart/templates/cart/detail.html:60 payment/templates/payment/process.html:34
+msgid "Subtotal"
+msgstr ""
+
+#: cart/templates/cart/detail.html:66
+#, python-format
+msgid ""
+"\n"
+"                            \"%(code)s\" coupon (%(discount)s%% off)\n"
+"                        "
+msgstr ""
+
+#: cart/templates/cart/detail.html:77 payment/templates/payment/process.html:15
+#: payment/templates/payment/process.html:53
+msgid "Total"
+msgstr ""
+
+#: cart/templates/cart/detail.html:86
+msgid "People who bought this also bought:"
+msgstr ""
+
+#: cart/templates/cart/detail.html:99
+msgid "Apply a coupon"
+msgstr ""
+
+#: cart/templates/cart/detail.html:102
+msgid "Apply"
+msgstr ""
+
+#: cart/templates/cart/detail.html:107
+msgid "Continue shopping"
+msgstr ""
+
+#: cart/templates/cart/detail.html:108
+msgid "Checkout"
+msgstr ""
+
+#: coupons/forms.py:6
+msgid "Coupon"
+msgstr ""
+
 #: myshop/settings.py:136
 msgid "English"
 msgstr ""
 
 #: myshop/settings.py:137
 msgid "Spanish"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:4
+msgid "Payment Canceled"
+msgstr ""
+
+#: payment/templates/payment/canceled.html:7
+msgid "Your payment has not been processed."
+msgstr ""
+
+#: payment/templates/payment/canceled.html:8
+msgid "There was a problem processing your payment."
+msgstr ""
+
+#: payment/templates/payment/completed.html:4
+msgid "Payment successful"
+msgstr ""
+
+#: payment/templates/payment/completed.html:7
+msgid "Your payment was successful."
+msgstr ""
+
+#: payment/templates/payment/completed.html:8
+msgid "Your payment has been processed successfully."
+msgstr ""
+
+#: payment/templates/payment/process.html:4
+msgid "Pay your order"
+msgstr ""
+
+#: payment/templates/payment/process.html:7
+msgid "Order Summary"
+msgstr ""
+
+#: payment/templates/payment/process.html:42
+#, python-format
+msgid ""
+"\n"
+"                    \"%(code)s\" coupon (%(discount)s%% off)\n"
+"                "
+msgstr ""
+
+#: payment/templates/payment/process.html:60
+msgid "Pay now"
+msgstr ""
+
+#: shop/templates/shop/base.html:6
+msgid "My Shop"
+msgstr ""
+
+#: shop/templates/shop/base.html:11
+msgid "My shop"
+msgstr ""
+
+#: shop/templates/shop/base.html:17
+msgid "Your Cart"
+msgstr ""
+
+#: shop/templates/shop/base.html:19
+#, python-format
+msgid ""
+"\n"
+"                            <!-- count items=... - Special: marks items as "
+"the plural counter-->\n"
+"                            <!-- count: allows you to set a variable for "
+"counting objects for Django to\n"
+"                                select the right plural form. -->\n"
+"<!--You define 'items' as you counting variable (for pluralization "
+"purposes), and you give it the value from 'total_items'.-->\n"
+"                                %(items)s item, $%(total)s\n"
+"                            "
+msgid_plural ""
+"\n"
+"                                %(items)s items, $%(total)s\n"
+"                            "
+msgstr[0] ""
+msgstr[1] ""
+
+#: shop/templates/shop/base.html:31
+msgid "Your Cart is Empty."
+msgstr ""
+
+#: shop/templates/shop/product/detail.html:20
+msgid "Add to cart"
+msgstr ""
+
+#: shop/templates/shop/product/detail.html:26
+msgid "People who bought this also bought-"
+msgstr ""
+
+#: shop/templates/shop/product/list.html:5
+#: shop/templates/shop/product/list.html:25
+msgid "Products"
+msgstr ""
+
+#: shop/templates/shop/product/list.html:10
+msgid "Categories"
+msgstr ""
+
+#: shop/templates/shop/product/list.html:13
+msgid "All"
 msgstr ""

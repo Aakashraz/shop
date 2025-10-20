@@ -24,8 +24,9 @@
                                 {{ items }} item, ${{ total }}
                             {% plural %}
                                 {{ items }} items, ${{ total }}
-                            {% endblocktranslate
+                            {% endblocktranslate %}
                         </a>
+
                     {% elif not order %}
                         {% translate "Your Cart is Empty." %}
                     {% endif %}
