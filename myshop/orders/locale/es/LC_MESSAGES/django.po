@@ -46,11 +46,11 @@ msgstr "ciudad"
 #: orders/templates/orders/order/create.html:4
 #: orders/templates/orders/order/create.html:7
 msgid "Checkout"
-msgstr ""
+msgstr "Compra"
 
 #: orders/templates/orders/order/create.html:9
 msgid "Your Order"
-msgstr ""
+msgstr "Su compra"
 
 #: orders/templates/orders/order/create.html:19
 #, python-format
@@ -59,51 +59,54 @@ msgid ""
 "                        \"%(code)s\" (%(discount)s%%off)\n"
 "                    "
 msgstr ""
+"\n"
+"            \"%(code)s\" (%(discount)s%% descuento)\n"
+"                    "
 
 #: orders/templates/orders/order/create.html:26
 #: orders/templates/orders/order/pdf.html:58
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: orders/templates/orders/order/create.html:30
 msgid "Place order"
-msgstr ""
+msgstr "Realizer compra"
 
 #: orders/templates/orders/order/pdf.html:4
 msgid "My Shop"
-msgstr ""
+msgstr "Mi tienda"
 
 #: orders/templates/orders/order/pdf.html:6
 msgid "Invoice no."
-msgstr ""
+msgstr "Factura no."
 
 #: orders/templates/orders/order/pdf.html:11
 msgid "Bill to"
-msgstr ""
+msgstr "Facturar a"
 
 #: orders/templates/orders/order/pdf.html:18
 msgid "Items bought"
-msgstr ""
+msgstr "Productos comprados"
 
 #: orders/templates/orders/order/pdf.html:22
 msgid "Product"
-msgstr ""
+msgstr "Producto"
 
 #: orders/templates/orders/order/pdf.html:23
 msgid "Price"
-msgstr ""
+msgstr "Precio"
 
 #: orders/templates/orders/order/pdf.html:24
 msgid "Quantity"
-msgstr ""
+msgstr "Cantidad"
 
 #: orders/templates/orders/order/pdf.html:25
 msgid "Cost"
-msgstr ""
+msgstr "Coste"
 
 #: orders/templates/orders/order/pdf.html:40
 msgid "Subtotal"
-msgstr ""
+msgstr "Subtotal"
 
 #: orders/templates/orders/order/pdf.html:47
 #, python-format
@@ -112,11 +115,14 @@ msgid ""
 "                            \"%(code)s\" (%(discount)s%% off)\n"
 "                        "
 msgstr ""
+"\n"
+"                            \"%(code)s\" (%(discount)s%% discuento)\n"
+"                        "
 
 #: orders/templates/orders/order/pdf.html:65
 msgid "Paid"
-msgstr ""
+msgstr "Pagado"
 
 #: orders/templates/orders/order/pdf.html:65
 msgid "Pending payment"
-msgstr ""
+msgstr "Pendiente de pago"

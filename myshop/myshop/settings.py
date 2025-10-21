@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'import_export',
     'import_export_celery',
 
+    'rosetta',
+
 ]
 
 MIDDLEWARE = [
