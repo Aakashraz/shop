@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     'import_export',
     'import_export_celery',
 
+    'rosetta',
+    'parler',
+
 ]
 
 MIDDLEWARE = [
@@ -285,3 +288,15 @@ REDIS_DB = 0
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
+
+# django-parler settings
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'en'},
+        {'code': 'es'},
+    ),
+    'default': {
+        'fallback': 'en',
+        'hide_untranslated': False,
+    }
+}
