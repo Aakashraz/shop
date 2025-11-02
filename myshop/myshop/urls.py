@@ -40,7 +40,8 @@ urlpatterns = i18n_patterns(
 
 urlpatterns += [
     path('payment/webhook/', webhooks.stripe_webhook, name='stripe-webhook'),
-    path('i18n/', include('django.conf.urls.i18n')),
+    # path('i18n/', include('django.conf.urls.i18n')),    # This url is needed to use django set_language in templates
+
 ]
 
 if settings.DEBUG:
