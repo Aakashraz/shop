@@ -17,10 +17,44 @@
                 <ul class="languages">
                     {% for language in languages %}
                         <li>
-                            <a href="/{{ language.code }}/"
-                               {% if language.code == LANGUAGE_CODE %} class="selected"{% endif %}>
-                                {{ language.name_local|capfirst }}
-                            </a>
+
+                            <form action="{% url 'shop:switch_language' %}" method="post">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}" />
+                                <input name="language" type="hidden" value="{{ language.code }}" />
+                                <button type="submit"
+                                        style="background:lightcoral; border:none; padding:0; cursor:pointer; text-decoration:underline; color:inherit;"
+                                        {% if language.code == LANGUAGE_CODE %}class="selected"{% endif %}>
+                                    {{ language.name_local|capfirst }}
+                                </button>
+                            </form>
+
+<!--    THIS BELOW CODE IS COMMENTED BECAUSE OF NOT USING THE 'set_language' block REPLACED BY THE ABOVE FORM TAG    -->
+                            <!-- Check if we're on a detail page with an object. -->
+<!--                            {% if product %}-->
+<!--                                &lt;!&ndash;  Switch to target language temporarily to get translated URL &ndash;&gt;-->
+<!--                                {% language language.code %}-->
+<!--                                    <a href="{{ product.get_absolute_url }}"-->
+<!--                                        {% if language.code == LANGUAGE_CODE %}class="selected"{% endif %}>-->
+<!--                                        {{ language.name_local|capfirst }}-->
+<!--                                    </a>-->
+<!--                                {% endlanguage %}-->
+
+<!--                            {% elif category %}-->
+<!--                                {% language language.code %}-->
+<!--                                    <a href="{{ category.get_absolute_url }}"-->
+<!--                                       {% if language.code == LANGUAGE_CODE %}class="selected"{% endif %}>-->
+<!--                                        {{ language.name_local|capfirst }}-->
+<!--                                    </a>-->
+<!--                                {% endlanguage %}-->
+
+<!--                            {% else %}-->
+<!--                                &lt;!&ndash; For other pages, just change language prefix &ndash;&gt;-->
+<!--                                <a href="/{{ language.code }}"-->
+<!--                                   {% if language.code == LANGUAGE_CODE %}class="selected"{% endif %}>-->
+<!--                                    {{ language.name_local|capfirst }}-->
+<!--                                </a>-->
+<!--                            {% endif %}-->
                         </li>
                     {% endfor %}
                 </ul>

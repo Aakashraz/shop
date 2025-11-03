@@ -33,9 +33,15 @@ urlpatterns = i18n_patterns(
     path('rosetta/', include('rosetta.urls')),
     path('', include('shop.urls', namespace='shop')),
 )
+# What i18n_patterns() does:
+# Automatically prefixes ALL URLs with the language code,
+# Get available languages from your settings.py (probably LANGUAGES = [('en', 'English'), ('es', 'Spanish')])
+
 
 urlpatterns += [
     path('payment/webhook/', webhooks.stripe_webhook, name='stripe-webhook'),
+    # path('i18n/', include('django.conf.urls.i18n')),    # This url is needed to use django set_language in templates
+
 ]
 
 if settings.DEBUG:
