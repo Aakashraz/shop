@@ -18,17 +18,18 @@
                     {% for language in languages %}
                         <li>
 
-                            <form action="{% url 'set_language' %}" method="post">
+                            <form action="{% url 'shop:switch_language' %}" method="post">
                                 {% csrf_token %}
                                 <input name="next" type="hidden" value="{{ request.path }}" />
                                 <input name="language" type="hidden" value="{{ language.code }}" />
                                 <button type="submit"
-                                        style="background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; color:inherit;"
+                                        style="background:lightcoral; border:none; padding:0; cursor:pointer; text-decoration:underline; color:inherit;"
                                         {% if language.code == LANGUAGE_CODE %}class="selected"{% endif %}>
                                     {{ language.name_local|capfirst }}
                                 </button>
                             </form>
 
+<!--    THIS BELOW CODE IS COMMENTED BECAUSE OF NOT USING THE 'set_language' block REPLACED BY THE ABOVE FORM TAG    -->
                             <!-- Check if we're on a detail page with an object. -->
 <!--                            {% if product %}-->
 <!--                                &lt;!&ndash;  Switch to target language temporarily to get translated URL &ndash;&gt;-->
