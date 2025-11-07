@@ -62,7 +62,7 @@
     </table>
 
     <span class="{% if order.paid %}paid{% else %}pending{% endif %}">
-        {% if order.paid %}{% translate "Paid" %}{% else %}{% translate "Pending payment"}{% endif %}
+        {% if order.paid %}{% trans "Paid" %}{% else %}{% trans "Pending payment" %}{% endif %}
     </span>
 </body>
 </html>

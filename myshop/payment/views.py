@@ -43,7 +43,7 @@ def payment_process(request):
                 {
                     'price_data': {
                         'currency': 'usd',
-                        'unit_amount': int(item.price * Decimal('100')),
+                        'unit_amount': int(item.price * Decimal('100')),    # amount in cents
                         'product_data': {
                             'name': item.product.name,
                         },
@@ -51,11 +51,30 @@ def payment_process(request):
                     'quantity': item.quantity,
                 }
             )
-        # Stripe Coupon
+            
+        # Add shipping as a line item (if > 0)
+        if order.shipping_cost > 0:
+            session_data['lin_items'].append(
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': int(order.shipping_cost * Decimal('100')),
+                        'product_data': {
+                            'name': 'Weight-Based Shipping',
+                        },
+                    },
+                    'quantity': 1,  # Shipping is a single flat fee, not something bought in multiple like products.
+                    # Setting quantity=1 charges the full unit_amount once to cope with overcharging.
+                }
+            )
+
+        # Stripe Coupon (use 'amount_off' for fixed discount on products only)
         if order.coupon:
+            discount_amount = order.get_discount()  # Calculated on product total before shipping
             stripe_coupon = stripe.Coupon.create(
                 name=order.coupon.code,
-                percent_off=order.discount, # This is percentage-based only; for fixed amounts, use amount_off instead.
+                amount_off=int(discount_amount * 100),   # Fixed amount in cents
+                currency='usd',
                 duration='once'
             )
 

@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from .forms import OrderCreateForm
 from .models import Order, OrderItem
 from .tasks import order_created
+from .utils import calculate_shipping
 
 
 # Create your views here.
@@ -25,6 +26,11 @@ def order_create(request):
             if cart.coupon:
                 order.coupon = cart.coupon
                 order.discount = cart.coupon.discount
+
+            # Calculate total weight from Cart (avoids needing saved items)
+            total_weight = sum(item['product'].weight * item['quantity'] for item in cart)
+            order.shipping_cost = calculate_shipping(total_weight)
+
             order.save()
             for item in cart:   # this calls your __iter__ above from cart.py
                 # each item looks like:
