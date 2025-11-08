@@ -4,7 +4,7 @@ from decimal import Decimal
 def calculate_shipping(weight: int) -> Decimal:
     if weight == 0:
         return Decimal('0.00')
-    elif weight <= 10000:   # <= 1KG
+    elif weight <= 1000:   # <= 1KG
         return Decimal('1.00')
     elif weight <= 2500:
         return Decimal('2.00')

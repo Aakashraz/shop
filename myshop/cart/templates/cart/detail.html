@@ -73,10 +73,17 @@
                     </td>
                 </tr>
             {% endif %}
+<!--        Shipping Cost Estimation -->
+            <tr class="shipping_title">
+                <td>{% trans "Estimated Shipping" %}</td>
+                <td colspan="4"></td>
+                <td class="num">${{ cart.get_shipping_cost|floatformat:2 }}</td>
+            </tr>
+
             <tr class="total">
                 <td>{% translate "Total" %}</td>
                 <td colspan="4"></td>
-                <td class="num">${{ cart.get_total_price_after_discount|floatformat:2 }}</td>
+                <td class="num">${{ cart.get_total_with_shipping|floatformat:2 }}</td>
             </tr>
         </tbody>
     </table>

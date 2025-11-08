@@ -152,3 +152,17 @@ class Cart:
 
     def get_total_price_after_discount(self):
         return self.get_total_price() - self.get_discount()
+
+
+    # For shipping purposes:
+    def get_total_weight(self):
+        return sum(item['product'].weight * item['quantity'] for item in self)
+
+
+    def get_shipping_cost(self):
+        from orders.utils import calculate_shipping     # avoid circular import
+        return calculate_shipping(self.get_total_weight())
+
+
+    def get_total_with_shipping(self):
+        return self.get_total_price_after_discount() + self.get_shipping_cost()

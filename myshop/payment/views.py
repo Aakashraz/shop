@@ -54,7 +54,7 @@ def payment_process(request):
             
         # Add shipping as a line item (if > 0)
         if order.shipping_cost > 0:
-            session_data['lin_items'].append(
+            session_data['line_items'].append(
                 {
                     'price_data': {
                         'currency': 'usd',

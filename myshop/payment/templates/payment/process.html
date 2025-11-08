@@ -49,6 +49,11 @@
             </td>
         </tr>
     {% endif %}
+    <tr class="shipping_title">
+        <td>Shipping cost estimated:</td>
+        <td colspan="3"></td>
+        <td class="num">{{ order.shipping_cost }}</td>
+    </tr>
     <tr class="total">
         <td>{% translate "Total" %}</td>
         <td colspan="3"></td>
@@ -57,7 +62,7 @@
     </tbody>
 </table>
 <form action="{% url 'payment:process' %}" method="post">
-    <input type="submit" value="{% translate "Pay now" %}">
+    <input type="submit" value="{% translate "Pay Now" %}">
     {% csrf_token %}
 </form>
 

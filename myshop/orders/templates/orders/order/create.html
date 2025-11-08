@@ -23,7 +23,11 @@
                 </li>
             {% endif %}
         </ul>
-        <p>{% translate "Total" %}: ${{ cart.get_total_price_after_discount|floatformat:2 }}</p>
+        <ul class="shipping_title">
+            {% trans "Shipping" %}: ${{ cart.get_shipping_cost|floatformat:2 }}
+        </ul>
+        <p><strong>{% translate "Total" %}: ${{ cart.get_total_with_shipping|floatformat:2 }}</strong></p>
+
     </div>
     <form method="post" class="order-form">
         {{ form.as_p }}
