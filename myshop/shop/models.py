@@ -46,6 +46,7 @@ class Product(TranslatableModel):
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    weight = models.PositiveIntegerField(default=0, help_text="Weight in grams")
 
     class Meta:
         # ordering = ['-created']

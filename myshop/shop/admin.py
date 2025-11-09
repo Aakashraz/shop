@@ -15,9 +15,9 @@ class CategoryAdmin(TranslatableAdmin):
 
 @admin.register(Product)
 class ProductAdmin(TranslatableAdmin):
-    list_display = ['name', 'slug', 'price', 'available', 'created', 'updated']
+    list_display = ['name', 'slug', 'price', 'weight', 'available', 'created', 'updated']
     list_filter = ['available', 'created', 'updated']
-    list_editable = ['price', 'available']
+    list_editable = ['price','weight', 'available']
 
     def get_prepopulated_fields(self, request, obj=None):
         return {'slug': ('name',)}

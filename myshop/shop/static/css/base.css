@@ -258,6 +258,13 @@ ul.errorlist {
     color:#dc1616;
 }
 
+.shipping_title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #583305;
+}
+
 .languages {
    float:right;
    padding-top:4px;

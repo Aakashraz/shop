@@ -29,6 +29,7 @@ class Order(models.Model):
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
+    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     class Meta:
         ordering = ['-created']
@@ -42,7 +43,7 @@ class Order(models.Model):
 
     def get_total_cost(self):
         total_cost = self.get_total_cost_before_discount()
-        return total_cost - self.get_discount()
+        return total_cost - self.get_discount() + self.shipping_cost
 
 
     def get_total_cost_before_discount(self):
@@ -57,6 +58,10 @@ class Order(models.Model):
         if self.discount:
             return total_cost * (Decimal(self.discount) / Decimal(100))
         return Decimal(0)
+
+
+    def get_total_weight(self):
+        return sum(item.get_weight() for item in self.items.all())
 
 
     def get_stripe_url(self):
@@ -88,3 +93,6 @@ class OrderItem(models.Model):
 
     def get_cost(self):
         return self.price * self.quantity
+
+    def get_weight(self):
+        return self.product.weight * self.quantity

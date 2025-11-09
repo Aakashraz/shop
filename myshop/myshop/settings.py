@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
     'rosetta',
     'parler',
+    'localflavor',
 
 ]
 
