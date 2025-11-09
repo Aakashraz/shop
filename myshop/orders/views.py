@@ -31,7 +31,7 @@ def order_create(request):
             total_weight = sum(item['product'].weight * item['quantity'] for item in cart)
             order.shipping_cost = calculate_shipping(total_weight)
 
-            order.save()
+            order.save()    # <- ORDER PLACED HERE! Writes to database
             for item in cart:   # this calls your __iter__ above from cart.py
                 # each item looks like:
                 # item from the __iter__ method: {'quantity': 5, 'price': Decimal('50.00'),
@@ -41,7 +41,7 @@ def order_create(request):
                     product=item['product'],    # a Product model instance
                     price=item['price'],        # price at time of order
                     quantity=item['quantity']   # how many units
-                )
+                )   # <- ORDER ITEMS SAVED HERE
             # item['price'] and item['quantity'] came straight from your session data via the Cart’s __iter__.
 
             # clear the cart
